@@ -13,3 +13,7 @@ type TransactionModel struct {
 	Currency      string    `bun:"currency"`
 	CreatedAt     time.Time `bun:"createdat,default:current_timestamp"`
 }
+
+type Hamada struct {
+	Name string
+}

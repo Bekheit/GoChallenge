@@ -30,5 +30,15 @@ func main() {
 
 	//routes.TransactionRoute(router)
 
+	//log.Infof("before produce")
+	//
+	//kafka2.Producee()
+	//
+	//log.Infof("after produce")
+	//
+	//kafka2.Consumee()
+	//
+	//log.Infof("after consume")
+
 	httpServer.Start()
 }

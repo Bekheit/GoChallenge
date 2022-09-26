@@ -2,7 +2,7 @@ package transaction
 
 import (
 	"context"
-	"example/go/internal/models"
+	"example/go/resources/models"
 )
 
 type IRepository interface {

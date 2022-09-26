@@ -37,11 +37,11 @@ func (c *TransactionController) handleCreateTransaction(writer http.ResponseWrit
 		return
 	}
 
-	if err := c.validate.Struct(payload); err != nil {
-		c.log.Errorf("payload not valid %v", err)
-		RenderError(req.Context(), writer, err)
-		return
-	}
+	//if err := c.validate.Struct(payload); err != nil {
+	//	c.log.Errorf("payload not valid %v", err)
+	//	RenderError(req.Context(), writer, err)
+	//	return
+	//}
 
 	res, err := c.transactionSvc.Create(req.Context(), &payload)
 
