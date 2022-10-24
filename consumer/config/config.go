@@ -11,11 +11,17 @@ import (
 
 type Configurations struct {
 	Database DatabaseConfigurations `koanf:"database"`
+	Kafka    KafkaConfigurations    `koanf:"kafka"`
 }
 
 type DatabaseConfigurations struct {
 	Dsn  string `koanf:"dsn"`
 	Pool int    `koanf:"pool"`
+}
+
+type KafkaConfigurations struct {
+	Broker string `koanf:"broker"`
+	Topic  string `koanf:"topic"`
 }
 
 func LoadConfig(logger *zap.SugaredLogger) *Configurations {

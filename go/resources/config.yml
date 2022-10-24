@@ -3,3 +3,7 @@ database:
 
 server:
   port: 8090
+
+kafka:
+  broker: "broker:29092"
+  topic: "transaction"

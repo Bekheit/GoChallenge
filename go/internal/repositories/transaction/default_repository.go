@@ -21,12 +21,20 @@ func NewDatabaseRepository(log *zap.SugaredLogger, conn *bun.DB) *DatabaseReposi
 
 func (r *DatabaseRepository) Create(ctx context.Context, model *models.TransactionModel) (*models.TransactionModel, error) {
 	_, err := r.db.NewInsert().Model(model).Exec(ctx)
-
+	model.Currency = Format(model.Currency)
 	if err != nil {
 		return nil, err
 	}
 
 	return model, nil
+}
+
+func Format(s string) string {
+	s = s[:len(s)-2] + "." + s[len(s)-2:]
+	for i := len(s) - 6; i >= 0; i -= 3 {
+		s = s[:i] + "," + s[i:]
+	}
+	return s
 }
 
 func (r *DatabaseRepository) GetAll(ctx context.Context) (*[]models.TransactionModel, error) {

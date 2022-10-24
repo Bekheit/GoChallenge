@@ -3,6 +3,10 @@ package main
 import (
 	"example/go/config"
 	"example/go/internal/adapters/api"
+	"example/go/internal/adapters/db"
+	"example/go/internal/adapters/stream"
+	"example/go/internal/repositories/transaction"
+	"example/go/internal/services/transactionsvc"
 	"example/go/resources"
 	"github.com/go-playground/validator/v10"
 )
@@ -17,19 +21,15 @@ func main() {
 
 	validate := validator.New()
 
-	api.NewTransactionController(httpServer, validate)
+	conn := db.NewDatabaseConnection(log, configs.Database)
 
-	//routes.TransactionRoute(router)
+	transactionRepo := transaction.NewDatabaseRepository(log, conn)
 
-	//log.Infof("before produce")
-	//
-	//kafka2.Producee()
-	//
-	//log.Infof("after produce")
-	//
-	//kafka2.Consumee()
-	//
-	//log.Infof("after consume")
+	transactionSvc := transactionsvc.NewDefaultService(log, transactionRepo)
+
+	api.NewTransactionController(httpServer, validate, transactionSvc)
+
+	stream.InitializeKafka(configs.Kafka)
 
 	httpServer.Start()
 }

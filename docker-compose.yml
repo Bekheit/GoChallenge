@@ -24,3 +24,26 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+
+  consumer:
+    build: ./consumer
+    container_name: consumer
+    volumes:
+      - ./consumer:/app
+    depends_on:
+      - zookeeper
+      - broker
+
+
+  producer:
+    build: ./go
+    container_name: producer
+    ports:
+      - '3000:8090'
+    volumes:
+      - ./go:/app
+    depends_on:
+      - zookeeper
+      - broker
+      - consumer
