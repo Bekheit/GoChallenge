@@ -23,6 +23,7 @@ require (
 	github.com/jcchavezs/porto v0.1.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/joeshaw/multierror v0.0.0-20140124173710-69b34d4ec901 // indirect
+	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/knadh/koanf v1.4.3 // indirect
 	github.com/magefile/mage v1.9.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

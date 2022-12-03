@@ -1,5 +1,7 @@
 database:
-  dsn: "postgresql://bekheit:i2_LaXK9tP8HVPO7RJ6BHA@free-tier13.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dsteep-alpaca-2628"
+    dsn: "postgresql://bekheit:FZXiqs_RfqeqAFNpYd5v3A@free-tier13.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dperky-opossum-4314"
+#   dsn: "postgresql://bekheit:i2_LaXK9tP8HVPO7RJ6BHA@free-tier13.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dsteep-alpaca-2628"
+
 
 server:
   port: 8090

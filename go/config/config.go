@@ -1,57 +1,60 @@
 package config
 
 import (
-	"github.com/knadh/koanf"
-	"github.com/knadh/koanf/parsers/yaml"
-	"github.com/knadh/koanf/providers/env"
-	"github.com/knadh/koanf/providers/file"
+	"os"
+	"strconv"
+
 	"go.uber.org/zap"
-	"strings"
 )
 
 type Configurations struct {
-	Server   ServerConfigurations   `koanf:"server"`
-	Database DatabaseConfigurations `koanf:"database"`
-	Kafka    KafkaConfigurations    `koanf:"kafka"`
+	Server   ServerConfigurations
+	Database DatabaseConfigurations
+	Kafka    KafkaConfigurations
 }
 
 type ServerConfigurations struct {
-	Port int `koanf:"port""`
+	Port int
 }
 
 type DatabaseConfigurations struct {
-	Dsn  string `koanf:"dsn"`
-	Pool int    `koanf:"pool"`
+	Dsn  string
+	Pool int
 }
 
 type KafkaConfigurations struct {
-	Broker string `koanf:"broker"`
-	Topic  string `koanf:"topic"`
+	Broker string
+	Topic  string
 }
 
 func LoadConfig(logger *zap.SugaredLogger) *Configurations {
-	k := koanf.New(".")
-	err := k.Load(file.Provider("resources/config.yml"), yaml.Parser())
 
-	if err != nil {
-		logger.Fatalf("Failed to locate configurations. %v", err)
+	// err := godotenv.Load()
+
+	// if err != nil {
+	// 	logger.Fatalf("Error loading .env file")
+	// }
+
+	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	var serverConf = &ServerConfigurations{
+		Port: port,
 	}
 
-	err = k.Load(env.Provider("", ".", func(s string) string {
-		return strings.Replace(strings.ToLower(s), "_", ".", -1)
-	}), nil)
-
-	if err != nil {
-		logger.Fatalf("Failed to replace environment variables. %v", err)
+	pool, _ := strconv.Atoi(os.Getenv("POOL"))
+	var databaseConfig = &DatabaseConfigurations{
+		Dsn:  os.Getenv("DSN"),
+		Pool: pool,
+	}
+	var kafkaConfig = &KafkaConfigurations{
+		Broker: os.Getenv("BROKER"),
+		Topic:  os.Getenv("TOPIC"),
 	}
 
-	var configuration Configurations
-
-	err = k.Unmarshal("", &configuration)
-
-	if err != nil {
-		logger.Fatalf("Failed to load configurations. %v", err)
+	var configuration = &Configurations{
+		Server:   *serverConf,
+		Database: *databaseConfig,
+		Kafka:    *kafkaConfig,
 	}
 
-	return &configuration
+	return configuration
 }

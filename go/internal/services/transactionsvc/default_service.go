@@ -5,6 +5,7 @@ import (
 	"example/go/internal/adapters/stream"
 	"example/go/internal/repositories/transaction"
 	"example/go/resources/models"
+
 	"github.com/dranikpg/dto-mapper"
 	"go.uber.org/zap"
 )
@@ -27,6 +28,17 @@ func (s *DefaultService) Create(ctx context.Context, payload *CreatePld) (*Creat
 	dto.Map(&tr, payload)
 
 	stream.Produce(tr)
+
+	// var res = &CreateRes{}
+
+	// result, err := s.transactionRepo.Create(ctx, &tr)
+
+	// if err != nil {
+	// 	s.log.Errorf("Cannot Create transaction")
+	// 	return nil, err
+	// }
+
+	// dto.Map(&res, result)
 
 	return nil, nil
 }

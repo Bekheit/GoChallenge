@@ -9,9 +9,9 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-  broker:
+  kafka:
     image: confluentinc/cp-kafka:7.0.0
-    container_name: broker
+    container_name: kafka
     ports:
       - "9092:9092"
     depends_on:
@@ -20,7 +20,7 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -29,11 +29,16 @@ services:
   consumer:
     build: ./consumer
     container_name: consumer
+    environment:
+      DSN: postgresql://bekheit:FZXiqs_RfqeqAFNpYd5v3A@free-tier13.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dperky-opossum-4314
+      POOL: 8
+      BROKER: kafka:29092
+      TOPIC: transaction
     volumes:
       - ./consumer:/app
     depends_on:
       - zookeeper
-      - broker
+      - kafka
 
 
   producer:
@@ -41,9 +46,15 @@ services:
     container_name: producer
     ports:
       - '3000:8090'
+    environment:
+      DSN: postgresql://bekheit:FZXiqs_RfqeqAFNpYd5v3A@free-tier13.aws-eu-central-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full&options=--cluster%3Dperky-opossum-4314
+      POOL: 8
+      BROKER: kafka:29092
+      TOPIC: transaction
+      PORT: 8090
     volumes:
       - ./go:/app
     depends_on:
       - zookeeper
-      - broker
+      - kafka
       - consumer

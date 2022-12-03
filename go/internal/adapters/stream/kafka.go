@@ -5,15 +5,17 @@ import (
 	"example/go/config"
 	"example/go/resources/models"
 	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"log"
-	"os"
+
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 var configMap *kafka.ConfigMap
 var message *kafka.Message
 
 func InitializeKafka(kafkaConf config.KafkaConfigurations) {
+	log.Printf("%v", kafkaConf)
+
 	configMap = &kafka.ConfigMap{
 		"bootstrap.servers": kafkaConf.Broker,
 	}
@@ -25,18 +27,20 @@ func InitializeKafka(kafkaConf config.KafkaConfigurations) {
 }
 
 func Produce(model models.TransactionModel) {
+	log.Printf("%v", configMap)
+
 	p, err := kafka.NewProducer(configMap)
-	defer p.Close()
 
 	if err != nil {
 		fmt.Printf("Failed to create producer: %s\n", err)
-		os.Exit(1)
 	}
+
+	defer p.Close()
 
 	js, err := json.Marshal(model)
 
 	if err != nil {
-		log.Fatal("encode error:", err)
+		log.Fatal("Marshal error:", err)
 	}
 
 	go func() {
@@ -54,12 +58,13 @@ func Produce(model models.TransactionModel) {
 
 	message.Value = js
 
+	log.Printf("before produce message")
 	err = p.Produce(message, nil)
+	log.Printf("after produce message")
 
 	if err != nil {
-		fmt.Printf("faled to produce message : %v", err)
+		fmt.Printf("failed to produce message : %v", err)
 	}
 
-	log.Printf("Updated")
-	p.Flush(15 * 1000)
+	p.Flush(60 * 1000)
 }
